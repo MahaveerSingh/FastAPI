@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+fastapienv/
+venv/
+env/
+.env
+.venv
+
+# Database files
+*.db
+*.sqlite3
+
+# SQLite binaries (not source code)
+TodoApp/sqlite3/
+TodoApp/sqlite3.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
