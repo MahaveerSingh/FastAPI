@@ -34,6 +34,10 @@ class CreateUserRequest(BaseModel):
     password: str
     role: str
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 def authencate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
@@ -53,14 +57,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get('sub')
         user_id: int = payload.get('id')
-        print(payload)
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                detail='Could not validata user.')
+                                detail='Could not validate user.')
         return {'username': username, 'id': user_id}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                            detail='Could not validata user.')
+                            detail='Could not validate user..')
 
 
 @router.get('/', status_code=status.HTTP_200_OK)
@@ -87,6 +90,6 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     user = authencate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                            detail='Could not validata user.')
+                            detail='Could not validate user...')
     token = create_access_token(user.username, user.id, timedelta(minutes=20))
-    return token
+    return {'access_token': token, 'token_type': 'bearer'}
